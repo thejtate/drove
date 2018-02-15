@@ -1,0 +1,219 @@
+input:not([type=checkbox]):not([type=radio]), select, textarea {
+  @include appearance(none);
+  @include box-shadow(none);
+  @include border-radius(0);
+}
+
+select, input:not([type=submit]):not([type=checkbox]):not([type=radio]), textarea {
+  border: 1px solid #cecece;
+  width: 100%;
+  padding: 4px 8px;
+
+  &.error {
+    border-color: red;
+  }
+
+  &:focus {
+    border-color: rgba(0, 0, 0, 0.27);
+    @include transition(box-shadow .3s);
+    @include box-shadow(inset 0 0 9px 0 rgba(0, 0, 0, 0.17));
+  }
+}
+
+textarea {
+  resize: none;
+}
+
+select {
+  cursor: pointer;
+  padding-right: 40px;
+  background: #fff url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAAJCAQAAACoRNXiAAAAK0lEQVQY02NgoA0w/mb8Hw6/oUuaIkmaYuotgEoVYDd6LVBqLW6bj5HsWAAv0Bfed1VYOwAAAABJRU5ErkJggg==') 96% 50% no-repeat;
+}
+
+.form {
+
+  &.form-type-a {
+    max-width: 520px;
+    margin: 0 auto;
+    font-size: 12px;
+    color: #292929;
+
+    fieldset {
+      border: none;
+      margin: 0;
+      padding: 0;
+
+      legend {
+        display: none;
+      }
+    }
+
+    .label {
+      padding-left: 10px;
+      font-weight: bold;
+    }
+
+    .form-required {
+      font-size: 22px;
+      display: inline-block;
+      vertical-align: text-top;
+      margin-right: 5px;
+      line-height: 1;
+    }
+
+    .form-item {
+      margin: 0 0 15px;
+      padding: 0 10px;
+    }
+
+    .webform-component-radios {
+
+      label, #edit-submitted-was-product-installed-at, .form-item {
+
+        @media (min-width: $bp-small) {
+          display: inline-block;
+          vertical-align: middle;
+        }
+      }
+
+      label, .form-item {
+
+        @media (min-width: $bp-small) {
+          margin: 0 20px 6px 0;
+        }
+      }
+    }
+
+    .form-radio {
+      position: absolute;
+      opacity: 0;
+    }
+
+    .form-radio + label {
+      padding-left: 25px;
+      position: relative;
+      line-height: 1;
+      cursor: pointer;
+
+      &:before {
+        @include pseudo-block($top: 50%, $left: 0);
+        width: 14px;
+        height: 14px;
+        border: 2px solid $color-a;
+        @include translateY(-50%);
+        @include border-radius(50%);
+      }
+    }
+
+    .form-radio:checked + label:before {
+      background: $color-a;
+    }
+
+    .desc {
+      font-weight: bold;
+      text-align: center;
+    }
+
+    fieldset[class*="webform-component--product-info--add-"] {
+      @include clearfix();
+
+      .form-item {
+
+        @media (min-width: $bp-small) {
+          width: 50%;
+          float: left;
+        }
+      }
+    }
+  }
+}
+
+.form-type-b {
+  max-width: 600px;
+  margin: 0 auto;
+
+  .webform-container-inline {
+
+    .form-item {
+      display: inline-block;
+      vertical-align: middle;
+
+      .select2 {
+        max-width: 100%;
+        width: 120px !important;
+      }
+    }
+
+    input.webform-calendar {
+      display: inline-block;
+      vertical-align: middle;
+      width: auto;
+    }
+  }
+
+  fieldset {
+    border: none;
+    padding: 0;
+    margin: 0;
+
+    legend {
+      display: none;
+    }
+  }
+
+  .webform-component--location .form-item {
+    display: inline-block;
+    vertical-align: middle;
+    width: 32%;
+    margin-right: 8px;
+
+    &:last-child {
+      margin-right: 0;
+    }
+  }
+}
+
+#user-profile-form {
+
+  .form-text {
+    padding: 8px 10px;
+    font-family: montserrat-regular;
+    font-size: 14px;
+    line-height: 1.2;
+    border: 1px solid #c0c0c0;
+  }
+
+  .form-submit {
+    cursor: pointer;
+    background: none;
+    border: none;
+    padding: 0;
+    margin: 0;
+    font-family: montserrat-bold;
+    color: #1176c0;
+    font-size: 18px;
+    @include transition(color 0.3s);
+  }
+
+  .description {
+    font-size: 11px;
+  }
+
+  fieldset {
+    border: none;
+    padding: 0;
+    margin: 0;
+  }
+}
+
+#user-pass-reset .form-actions .form-submit {
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  font-family: montserrat-bold;
+  color: #1176c0;
+  font-size: 18px;
+  @include transition(color 0.3s);
+}

@@ -1,0 +1,67 @@
+@font-face {
+  font-family: 'nexa-light';
+  src: url('../fonts/nexa-light.woff2') format('woff2'),
+  url('../fonts/nexa-light.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'nexa-bold';
+  src: url('../fonts/nexa-bold.woff2') format('woff2'),
+  url('../fonts/nexa-bold.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'montserrat-light';
+  src: url('../fonts/montserrat-light.woff2') format('woff2'),
+  url('../fonts/montserrat-light.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+@import url('https://fonts.googleapis.com/css?family=Raleway:300');
+
+//@font-face {
+//  font-family: 'raleway-light';
+//  src: url('../fonts/raleway-light.woff2') format('woff2'),
+//  url('../fonts/raleway-light.woff') format('woff');
+//  font-weight: normal;
+//  font-style: normal;
+//}
+
+@font-face {
+  font-family: 'montserrat-regular';
+  src: url('../fonts/montserrat-regular.woff2') format('woff2'),
+  url('../fonts/montserrat-regular.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'montserrat-semibold';
+  src: url('../fonts/montserrat-semibold.woff2') format('woff2'),
+  url('../fonts/montserrat-semibold.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'montserrat-bold';
+  src: url('../fonts/montserrat-bold.woff2') format('woff2'),
+  url('../fonts/montserrat-semibold.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "SSGlyphish";
+  src: url('../fonts/ss-glyphish-outlined.eot');
+  src: url('../fonts/ss-glyphish-outlined.eot?#iefix') format('embedded-opentype'),
+  url('../fonts/ss-glyphish-outlined.woff') format('woff'),
+  url('../fonts/ss-glyphish-outlined.ttf') format('truetype'),
+  url('../fonts/ss-glyphish-outlined.svg#SSGlyphishOutlined') format('svg');
+  font-weight: 400;
+  font-style: normal;
+}

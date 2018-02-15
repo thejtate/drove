@@ -1,0 +1,132 @@
+<?php
+
+/**
+ * Implements hook_menu().
+ */
+function login_custom_menu() {
+  $items = array();
+
+  $items['login_custom_ajax/%/%ctools_js'] = array(
+    'page callback' => 'login_custom_ajax_callback',
+    'page arguments' => array(1, 2),
+    'access callback' => TRUE,
+    'type' => MENU_CALLBACK,
+    'delivery callback' => 'ajax_deliver',
+    'theme callback' => 'ajax_base_page_theme',
+  );
+
+  $items['admin/user_redirect/config'] = array(
+    'title' => 'User redirect settings',
+    'description' => 'User redirect configuration page',
+    'type' => MENU_NORMAL_ITEM,
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('drow_custom_user_redirect_settings_form'),
+    'access arguments' => array('Administer user login redirect configuration'),
+  );
+
+  return $items;
+}
+
+/**
+ * Implements hook_permission().
+ */
+function login_custom_permission() {
+  $return = array();
+
+  $return['Administer login redirect configuration'] = array(
+    'title' => t('Allow to administer login redirect settings'),
+  );
+
+  return $return;
+}
+
+/**
+ * Implements hook_form_alter().
+ */
+function login_custom_form_alter(&$form, &$form_state, $form_id) {
+
+  switch ($form_id) {
+    case  'user_login_block':
+
+      $form['messages'] = array(
+        '#markup' => '<div id="ajax-forms-messages"></div>',
+        '#weight' => -50,
+      );
+
+      $form['actions']['submit']['#ajax'] = array(
+        'path' => 'login_custom_ajax/%/%ctools_js',
+      );
+
+      break;
+  }
+}
+
+/**
+ * Provides ajax callback for form submit
+ */
+function login_custom_ajax_callback($js = NULL, $action) {
+  // Fall back if $js is not set.
+  if (!$js) {
+    return drupal_get_form('user_login');
+  }
+
+  ctools_include('ajax');
+  ctools_add_js('ajax-responder');
+
+  module_load_include('pages.inc', 'user');
+
+  list($form, $form_state) = ajax_get_form();
+
+  drupal_process_form($form['#form_id'], $form, $form_state);
+
+  $commands = array();
+  $commands[] = ajax_command_html('#ajax-forms-messages', theme('status_messages'));
+
+  if (isset($_GET['destination'])) {
+    $commands[] = ctools_ajax_command_redirect($_GET['destination']);
+  }
+  elseif (drupal_get_messages(NULL, FALSE)) {
+    $commands[] = ctools_ajax_command_redirect('');
+  }
+
+  // add message to <div id="ajax-forms-messages">
+  return array('#type' => 'ajax', '#commands' => $commands);
+}
+
+/**
+ * Page arguments for user redirect
+ * @param $form
+ * @return mixed
+ */
+
+function drow_custom_user_redirect_settings_form($form, $account) {
+  $roles_list = user_roles();
+  foreach ($roles_list as $user_role) {
+    if ($user_role != 'anonymous user' && $user_role != 'authenticated user') {
+      $form['redirect_nid_' . $user_role] = array(
+        '#type' => 'textfield',
+        '#required' => FALSE,
+        '#title' => t('Nid to redirect for role: ' . $user_role),
+        '#default_value' => variable_get('redirect_nid_' . $user_role, ''),
+      );
+    }
+  }
+
+  return system_settings_form($form);
+}
+
+/**
+ * Implements hook_user_login()
+ */
+function login_custom_user_login(&$edit, $account) {
+
+  foreach ($account->roles as $role) {
+    $redirect_nid = variable_get('redirect_nid_' . $role);
+    if (!isset($_POST['form_id']) || $_POST['form_id'] != 'user_pass_reset') {
+      if (!empty(variable_get('redirect_nid_' . $role))) {
+        $_GET['destination'] = 'node/' . $redirect_nid;
+      }
+    }
+  }
+}
+

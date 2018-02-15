@@ -1,0 +1,48 @@
+<?php
+/**
+ * @file
+ * Install, update and uninstall functions for the drov_portal module.
+ */
+
+/**
+ * Implements hook_schema().
+ */
+function drov_portal_schema() {
+  $schema = array();
+
+  $schema['drov_portal_nid_vid_map'] = array(
+    'description' => 'Mapping portal nid to folder vocabulary',
+
+    //hook_schema_item_export
+
+    'fields' => array(
+      // In case of CTools exportable the reserved field names are:
+      // - export_module
+      // - export_type
+      // - api_version
+      'nid' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'The related {node}.nid.',
+      ),
+      'vid' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'The related {vocabulary}.vid.',
+      ),
+//      hook_schema_item_fields_
+    ),
+
+    'primary key' => array('nid'),
+    'indexes' => array(
+      'vid' => array('vid'),
+    ),
+  );
+
+  return $schema;
+}
+

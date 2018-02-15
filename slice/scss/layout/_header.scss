@@ -1,0 +1,306 @@
+.site-header {
+  line-height: 1.4;
+
+  .container {
+    height: 80px;
+    width: 100%;
+
+    @media (min-width: $bp-small) {
+      height: 130px;
+    }
+
+    @media (min-width: $bp-middle) {
+      width: $width-large;
+      height: 162px;
+    }
+  }
+
+  .logo, .btn-nav {
+    position: absolute;
+    top: 50%;
+    @include translate(0, -50%);
+  }
+
+  .logo {
+    left: 10px;
+
+    @media (min-width: $bp-small) {
+      left: 20px;
+    }
+
+    @media (min-width: $bp-middle) {
+      left: 0;
+    }
+  }
+
+  .btn-nav {
+    right: 8px;
+    display: block;
+
+    @media (min-width: $bp-small) {
+      display: none;
+    }
+
+    a {
+      display: block;
+      width: 40px;
+      height: 40px;
+
+      &:before, &:after {
+        @include pseudo-block($left: 0);
+        background: $color;
+        width: 40px;
+        height: 5px;
+        @include border-radius(20px);
+      }
+
+      &:before {
+        top: 12px;
+
+        .mobile-nav-active & {
+          @include rotate(-45deg);
+          top: 17px;
+        }
+      }
+
+      &:after {
+        bottom: 12px;
+
+        .mobile-nav-active & {
+          @include rotate(45deg);
+          bottom: 18px;
+        }
+      }
+    }
+  }
+
+  .navigation {
+    @include backface-visibility(hidden);
+    left: 0;
+    right: 0;
+    top: 100%;
+    position: absolute;
+    background: rgba(255, 255, 255, 0.95);
+    display: none;
+    padding-bottom: 5px;
+    z-index: 4;
+    @include box-shadow(0px 15px 24px -16px rgba(0, 0, 0, .5));
+
+    @media (min-width: $bp-small) {
+      max-width: 660px;
+      top: 50%;
+      @include translate(0, -50%);
+      right: 10px;
+      left: auto;
+      display: block;
+      background: none;
+      padding-bottom: 0;
+      @include box-shadow(none);
+    }
+
+    @media (min-width: $bp-middle) {
+      right: 0;
+      text-align: right;
+    }
+
+    .mobile-nav-active & {
+      display: block;
+    }
+
+    ul {
+      margin: 0;
+      padding: 0;
+
+      @media (min-width: $bp-small) {
+        display: inline-block;
+        vertical-align: top;
+        margin-right: 12px;
+      }
+    }
+
+    li {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      text-align: center;
+
+      @media (min-width: $bp-small) {
+        display: inline-block;
+        vertical-align: middle;
+      }
+    }
+  }
+
+  .top-menu {
+    font-size: 12px;
+    font-family: $montserrat-regular;
+    margin-bottom: 4px;
+    padding-bottom: 4px;
+    border-bottom: 1px solid $color;
+
+    @media (min-width: $bp-small) {
+      padding-bottom: 0;
+      margin-bottom: 13px;
+      border-bottom: none;
+    }
+
+    ul {
+
+      @media (min-width: $bp-small) {
+        border: 1px solid $color-top-menu;
+      }
+    }
+
+    li {
+
+      &.active, &:hover {
+
+        a {
+          background: $color;
+          color: #fff;
+
+          @media (min-width: $bp-small) {
+            background: $color-top-menu;
+            color: #fff;
+          }
+
+          &:before, &:after {
+            opacity: 0;
+
+            @media (min-width: $bp-small) {
+              opacity: 1;
+            }
+          }
+        }
+      }
+
+      &.active {
+        font-family: $montserrat-bold;
+
+        a {
+          color: #fff;
+        }
+      }
+
+      &:last-child a {
+
+        &:before {
+          @include translate(0, -50%);
+        }
+
+        &:after {
+          display: none;
+        }
+      }
+    }
+
+    a {
+      @include transition(background .3s, color .3s);
+      color: $color;
+      padding: 9px 10px 7px;
+      position: relative;
+
+      @media (min-width: $bp-small) {
+        padding: 6px 6px 5px;
+        color: $color-top-menu;
+      }
+
+      @media (min-width: $bp-middle) {
+        padding: 6px 10px 5px;
+      }
+
+      &:before, &:after {
+        @include transition(opacity .3s);
+        opacity: 0;
+      }
+
+      &:before {
+        @include pseudo-block($left: 100%, $top: 50%);
+        @include translate(4px, -50%);
+        border-top: 5px solid transparent;
+        border-bottom: 5px solid transparent;
+        border-left: 5px solid $color-top-menu;
+      }
+
+      &:after {
+        @include pseudo-block($left: 100%, $top: 0, $bottom: 0);
+        width: 4px;
+        background: $color-top-menu;
+      }
+    }
+  }
+
+  .bottom-menu {
+    font-size: 18px;
+    font-family: $montserrat-semibold;
+
+    a {
+      color: $color-bottom-menu;
+      padding: 5px;
+    }
+
+    li {
+      position: relative;
+
+      @media (min-width: $bp-small) {
+        border-right: 1px solid $color-top-menu;
+      }
+
+      &.active, &:hover {
+
+        @media (min-width: $bp-small) {
+
+          a:before {
+            opacity: 1;
+            visibility: visible;
+            @include translate(0, 6px);
+          }
+        }
+
+        a {
+          color: $color-a;
+
+          @media (min-width: $bp-small) {
+            color: $color;
+          }
+        }
+      }
+
+      &:last-child {
+        border-right: none;
+      }
+    }
+
+    a:before {
+      @include pseudo-block($left: 15px, $top: 100%, $right: 15px);
+      opacity: 0;
+      visibility: hidden;
+      @include translate(0, 16px);
+      @include transition(opacity .3s, visibility .3s, transform .3s);
+      border-bottom: 8px solid $color-a;
+    }
+  }
+
+  a {
+    display: block;
+    text-decoration: none;
+  }
+
+  .region-top-header {
+    margin-bottom: 10px;
+
+    @media (min-width: $bp-small) {
+      display: inline-block;
+      vertical-align: top;
+      margin-bottom: 0;
+    }
+  }
+
+  .btn-wrap {
+    text-align: center;
+
+    @media (min-width: $bp-small) {
+      display: inline-block;
+    }
+  }
+}

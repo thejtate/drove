@@ -1,0 +1,16 @@
+.outer-wrapper {
+  overflow: hidden;
+  position: relative;
+}
+
+.content-wrapper {
+  padding: 40px 0;
+
+  @media (min-width: $bp-small) {
+    padding: 60px 0;
+  }
+
+  @media (min-width: $bp-middle) {
+    padding: 100px 0;
+  }
+}

@@ -1,0 +1,137 @@
+<?php
+/**
+ * @file
+ * drow_custom
+ */
+
+/**
+ * Implements hook_menu().
+ */
+function drow_custom_menu() {
+  $items = array();
+
+  $items['pdf-view/%field_collection_item/%file'] = array(
+    'title' => 'Pdf view',
+    'description' => 'Pdf view',
+    'access callback' => 'drow_custom_pdf_view_access',
+    'access arguments' => array(1, 2),
+    'page callback' => 'drow_custom_pdf_view_page',
+    'page arguments' => array(1, 2),
+    'type' => MENU_CALLBACK,
+  );
+
+  return $items;
+}
+
+/**
+ * Page access callback.
+ */
+function drow_custom_pdf_view_access($field_collection_item, $file) {
+  $host_entity = $field_collection_item->hostEntity();
+  $host_node = $host_entity->hostEntity();
+
+  return node_access('view', $host_node);
+}
+
+/**
+ * Implements hook_file_download_access().
+ */
+function drow_custom_file_download_access($file_item, $entity_type, $entity) {
+    if($entity->field_name == 'field_portal_docs_fc_files_fc') {
+      $host_entity = $entity->hostEntity();
+      $host_node = $host_entity->hostEntity();
+
+      return node_access('view', $host_node);
+    }
+}
+
+/**
+ * Page callback.
+ */
+function drow_custom_pdf_view_page($field_collection_item, $file) {
+  $library = libraries_load('pdf.js');
+  if ($library['loaded'] == FALSE) {
+    drupal_set_message($library['error message'], 'error');
+    return 'Please download and install ' . l($library['name'], $library['download url']) . '!';
+  }
+  $file_url = file_create_url($file->uri);
+  $module_path = drupal_get_path('module', 'drow_custom');
+  $library_path = libraries_get_path('pdf.js');
+
+  if(!empty($field_collection_item->field_portal_files_fc_en_dl[LANGUAGE_NONE][0]['value'])) {
+    //Default pdf.js template, that allow to download pdf file
+    $iframe_src = file_create_url($library_path . '/web/viewer.html') . '?file=' . rawurlencode($file_url);
+  } else {
+    //Custom pdf.js template, without acces to download pdf
+    $iframe_src = file_create_url($library_path . '/web/viewer_custom.html') . '?file=' . rawurlencode($file_url);
+  }
+
+
+
+  $html['css'] = array(
+    '#type' => 'html_tag',
+    '#tag' => 'style',
+    '#value' => 'body {margin: 0; padding: 0;}',
+    '#attributes' => array(
+      'type' => 'text/css',
+    )
+  );
+  $html['iframe'] = array(
+    '#type' => 'html_tag',
+    '#tag' => 'iframe',
+    '#value' => $file_url,
+    '#attributes' => array(
+      'class' => array('pdf'),
+      'webkitallowfullscreen' => '',
+      'mozallowfullscreen' => '',
+      'allowfullscreen' => '',
+      'frameborder' => 'no',
+      'width' => '100%',
+      'height' => '100%',
+      'src' => $iframe_src,
+      'data-src' => $file_url,
+    ),
+  );
+
+  print render($html);
+  drupal_exit();
+}
+
+/**
+ * Implements hook_file_download().
+ */
+function drow_custom_file_download($uri) {
+
+//  if (
+//    strpos($uri, 'private://client/') == 0
+//    && strpos($_SERVER['REQUEST_URI'], '/pdf-view/') !== 0
+//    && strpos($_SERVER['HTTP_REFERER'], 'libraries/pdf.js/build/pdf.worker.js') === FALSE
+//    && strpos($_SERVER['REQUEST_URI'], '/media/browser') !== 0
+//  ) {
+//
+//    //allow load pdf files only on special page
+//    $files = entity_load('file', FALSE, array('uri' => $uri));
+//    $file = !empty($files) ? reset($files) : FALSE;
+//
+//    if (!empty($file)) {
+//      drupal_goto('pdf-view/' . $file->fid);
+//    }
+//    else {
+//      drupal_access_denied();
+//    }
+//  }
+}
+
+/**
+ * Remove N/A from Radio Button list
+ */
+function drow_custom_element_info_alter(&$type) {
+  $type['radios']['#process'][] = '_drow_custom_remove_radio_na';
+}
+
+function _drow_custom_remove_radio_na($element) {
+  unset($element['#options']['_none']);
+  unset($element['_none']);
+  return $element;
+}
+

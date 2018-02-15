@@ -1,0 +1,313 @@
+<?php
+/**
+ * @file
+ * Drov portal funtionality
+ */
+define('DROV_PORTAL_NID_PLACEHOLDER', '(nid placeholder)');
+
+/**
+ * Implements hook_theme().
+ */
+function drov_portal_theme() {
+  $return = array();
+
+  $return['drov_protal_folders'] = array(
+    'variables' => array(
+    ),
+    'path' => drupal_get_path('module', 'drov_portal') . "/templates",
+    'template' => 'drov-protal-folders'
+  );
+
+  return $return;
+}
+
+/**
+ * Implements hook_menu_alter().
+ */
+function drov_portal_menu_alter(&$items) {
+  if(!empty($items['hierarchical_select_ajax']['theme callback'])) {
+    //fix bug with theme changing
+    //unset($items['hierarchical_select_ajax']['theme callback']);
+    $items['hierarchical_select_ajax']['theme callback'] = 'drov_portal_ajax_base_page_theme';
+  }
+
+  if(!empty($items['admin/structure/taxonomy/%taxonomy_vocabulary_machine_name'])) {
+    $items['admin/structure/taxonomy/%taxonomy_vocabulary_machine_name']['access callback'] = 'drov_portal_vocabulary_list_access';
+    $items['admin/structure/taxonomy/%taxonomy_vocabulary_machine_name']['access arguments'] = array(3);
+  }
+
+}
+
+function drov_portal_vocabulary_list_access($voc) {
+
+  if(user_access('administer taxonomy')) {
+    return TRUE;
+  } else {
+    $nid = drov_portal_get_vocabulary_node($voc->vid);
+    $node = node_load($nid);
+    return node_access('update', $node);
+  }
+}
+
+/**
+ * Theme callback.
+ * fast fix for bug with theme changing on ajax requests
+ */
+function drov_portal_ajax_base_page_theme() {
+
+  $admin_theme = variable_get('admin_theme', 'seven');
+
+  if(drupal_theme_access($admin_theme)) {
+    return $admin_theme;
+  } else {
+    return ajax_base_page_theme();
+  }
+}
+
+/**
+ * Implements hook_form_alter().
+ */
+function drov_portal_form_alter(&$form, &$form_state, $form_id) {
+
+
+  if($form_id == 'portal_node_form') {
+
+    if(!empty($form_state['build_info']['args'][0]->nid)) {
+      $vid = drov_portal_get_node_vocabulary($form_state['build_info']['args'][0]->nid);
+      if(!empty($vid)) {
+        $voc = taxonomy_vocabulary_load($vid);
+
+        $form['field_portal_docs_field_coll']['#prefix'] = l('Edit/Reorganize folders ', 'admin/structure/taxonomy/' . $voc->machine_name, array('query' => drupal_get_destination()));
+      }
+    }
+  }
+
+}
+
+/**
+ * Implements hook_field_widget_form_alter().
+ */
+function drov_portal_field_widget_form_alter(
+  &$element,
+  &$form_state,
+  $context
+) {
+
+  if ($context['field']['field_name'] == 'field_portal_docs_fc_folder' && is_object($form_state['build_info']['args'][0])) {
+
+    $element['#attributes']['class'][] = 'portal-folder-element';
+
+    if(!empty($form_state['build_info']['args'][0]->nid)) {
+      $vid = drov_portal_get_node_vocabulary($form_state['build_info']['args'][0]->nid);
+      if($vid) {
+        $element['#config']['params']['vid'] = $vid;
+      }
+    } else if(!empty($form_state['build_info']['args'][0]->portal_folder_vocabulary)) {
+      $element['#config']['params']['vid'] = $form_state['build_info']['args'][0]->portal_folder_vocabulary->vid;
+    } else {
+      //create new temporary vocabulary
+      $vocabulary = drov_portal_new_vocabulary_object();
+      taxonomy_vocabulary_save($vocabulary);
+      $voc = taxonomy_vocabulary_machine_name_load($vocabulary->machine_name);
+      
+      $form_state['build_info']['args'][0]->portal_folder_vocabulary = $voc;
+      $element['#config']['params']['vid'] = $voc->vid;
+    }
+  }
+}
+
+/**
+ * Implements hook_field_attach_validate().
+ */
+function drov_portal_field_attach_validate($entity_type, $entity, &$errors) {
+
+  //Remove validation, to allow use tid from different vacabularies.
+  if ($entity_type == 'field_collection_item' && $entity->field_name == 'field_portal_docs_field_coll') {
+    if (!empty($errors['field_portal_docs_fc_folder'][LANGUAGE_NONE][0][0]['error'])
+      && $errors['field_portal_docs_fc_folder'][LANGUAGE_NONE][0][0]['error'] == 'taxonomy_term_reference_illegal_value'
+    ) {
+      unset($errors['field_portal_docs_fc_folder'][LANGUAGE_NONE][0][0]);
+    }
+  }
+}
+
+/**
+ * Implements hook_node_insert().
+ */
+function drov_portal_node_insert($node) {
+
+  if(!empty($node->portal_folder_vocabulary)) {
+    $node->portal_folder_vocabulary->name = str_replace(
+      DROV_PORTAL_NID_PLACEHOLDER, $node->nid, $node->portal_folder_vocabulary->name);
+    taxonomy_vocabulary_save($node->portal_folder_vocabulary);
+    $voc = $node->portal_folder_vocabulary;
+  } else {
+    $vocabulary = drov_portal_new_vocabulary_object($node->nid);
+    taxonomy_vocabulary_save($vocabulary);
+    $voc = taxonomy_vocabulary_machine_name_load($vocabulary->machine_name);
+  }
+
+
+  
+  if(!empty($voc)) {
+    $rec = array('nid' => $node->nid, 'vid' => $voc->vid);
+    drupal_write_record('drov_portal_nid_vid_map', $rec);
+  }
+}
+
+function drov_portal_new_vocabulary_object($nid = NULL) {
+  $vocabulary = new stdClass();
+  $vocabulary->name = 'Portal folders for node ' . (!empty($nid) ? $nid : DROV_PORTAL_NID_PLACEHOLDER);
+  $vocabulary->machine_name = 'portal_' . uniqid();
+  $vocabulary->description = '';
+  $vocabulary->module = 'taxonomy';
+  
+  return $vocabulary;
+}
+
+
+/**
+ * Implements hook_node_delete().
+ */
+function drov_portal_node_delete($node) {
+  $vid = drov_portal_get_node_vocabulary($node->nid);
+  if(!empty($vid)) {
+    taxonomy_vocabulary_delete($vid);
+  }
+  db_delete('drov_portal_nid_vid_map')
+    ->condition('vid', $node->nid)
+    ->execute();
+}
+
+/**
+ * Implements hook_taxonomy_vacabulary_delete().
+ */
+function drov_portal_taxonomy_vocabulary_delete($vocabulary) {
+  db_delete('drov_portal_nid_vid_map')
+    ->condition('vid', $vocabulary->vid)
+    ->execute();
+}
+
+function drov_portal_get_node_vocabulary($nid) {
+  $q = db_select('drov_portal_nid_vid_map', 'm')
+    ->condition('m.nid', $nid)
+    ->fields('m', array('vid'));
+  return $q->execute()->fetchField();
+}
+
+function drov_portal_get_vocabulary_node($vid) {
+  $q = db_select('drov_portal_nid_vid_map', 'm')
+    ->condition('m.vid', $vid)
+    ->fields('m', array('nid'));
+  return $q->execute()->fetchField();
+}
+
+/**
+ * Implements hook_hierarchical_select_ajax_commands_alter().
+ */
+function drov_portal_hierarchical_select_ajax_commands_alter(&$commannds, $context) {
+  if(!empty($context['form_state']['field']['field_portal_docs_field_coll'])
+    && !empty($context['form_state']['clicked_button']['#value'])
+    && $context['form_state']['clicked_button']['#value'] == t('Create')) {
+
+    $element_name = $context['element']['#name'];
+
+    //reload other hierarchical selects to add new added folder
+    $commannds[] = ajax_command_invoke('.portal-folder-element div.selects select:first-child:not([name^="' . $element_name . '"])', 'trigger', array('change'));
+  }
+}
+
+/**
+ * Helper function, generate vocabularies for existing nodes. For manual use.
+ */
+function drov_portal_generate_node_vocabularies() {
+
+  $query = new EntityFieldQuery();
+  $query->entityCondition('entity_type', 'node')
+    ->entityCondition('bundle', 'portal');
+
+  $result = $query->execute();
+  if (isset($result['node'])) {
+    $news_items_nids = array_keys($result['node']);
+
+    $temp_obj = new StdClass();
+    foreach ($news_items_nids as $nid) {
+      $temp_obj->nid = $nid;
+      drov_portal_node_insert($temp_obj);
+    }
+  }
+}
+
+/**
+ * Implements hook_preprocess_views_view().
+ */
+function drov_portal_preprocess_views_view(&$vars) {
+
+  if($vars['view']->name == 'portal_documents') {
+
+    $nid = $vars['view']->args[0];
+    $vid = drov_portal_get_node_vocabulary($nid);
+    $folder_tid = !empty($_GET['folder']) ? (int) $_GET['folder'] : 0;
+    $folder_term = $folder_tid ? taxonomy_term_load($folder_tid) : NULL;
+
+    if(!empty($folder_term) && $folder_term->vid !== $vid) {
+      //invalid term id
+      return;
+    }
+
+    $folder_name = !empty($folder_term) ? $folder_term->name : '';
+
+    $parents = taxonomy_get_parents($folder_tid);
+    $parent_link = '';
+    if(!empty($parents)) {
+      $parent = reset($parents);
+      $parent_link = l('< Back', current_path(),         array(
+        'attributes' => array('class' => array('btn')),
+        'query' => array('folder' => $parent->tid),
+        'fragment' => 'folders',
+      ));
+    } else if($folder_tid) {
+      $parent_link = l(t('< Back'), current_path(),         array(
+        'attributes' => array('class' => array('btn')),
+        'fragment' => 'folders',
+      ));
+    }
+
+    $q = db_select('taxonomy_term_hierarchy', 'h');
+    $q->join('taxonomy_term_data', 't', 't.tid = h.tid');
+    $q->condition('t.vid', $vid);
+    $q->condition('h.parent', $folder_tid);
+    $q->fields('t', array('tid', 'name'));
+    $q->orderBy('t.weight');
+//    $q->orderBy('t.tid');
+    $terms = $q->execute()->fetchAll();
+
+    $folders_links = array();
+    foreach ($terms as $term_info) {
+      $folders_links[] = l(
+        preg_replace('~(?<=\s)\s~', '&nbsp;', check_plain($term_info->name)),//replece multiple spaces to &nbsp; starting from second
+        current_path(),
+        array(
+          'attributes' => array('class' => array('btn')),
+          'query' => array('folder' => $term_info->tid),
+          'fragment' => 'folders',
+          'html' => TRUE,
+        )
+      );
+    }
+
+    $vars['folders'] = theme('drov_protal_folders', array('folders_links' => $folders_links, 'parent_link' => $parent_link, 'folder_name' => $folder_name));
+  }
+}
+
+function drov_delete_temporary_vocabularies() {
+  $vocs = db_select('taxonomy_vocabulary', 'v')
+    ->condition('v.name', '%' . db_like('Portal folders for node '. DROV_PORTAL_NID_PLACEHOLDER), 'LIKE')
+    ->fields('v')
+    ->execute()
+    ->fetchAll();
+
+  foreach ($vocs as $voc) {
+    taxonomy_vocabulary_delete($voc->vid);
+  }
+}

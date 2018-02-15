@@ -1,0 +1,9 @@
+name = Custom login popup
+description = Custom login popup
+package = custom
+core = 7.x
+version = 7.x-1.x
+
+configure = admin/user_redirect/config
+
+dependencies[] = ctools

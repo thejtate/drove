@@ -1,0 +1,9 @@
+name = drow custom
+description = drow custom
+package = custom
+core = 7.x
+version = 7.x-1.x
+interface translation project = FALSE
+
+;files[] =
+dependencies[] = pdf

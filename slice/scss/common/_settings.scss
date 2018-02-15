@@ -1,0 +1,51 @@
+$icons: sprite-map('icons/*.png', $spacing: 8px, $layout: 'smart');
+//$icons2: sprite-map("icons2x/*.png", $layout: smart);
+
+$experimental-support-for-svg: true;
+$experimental-support-for-opera: false;
+
+//color
+$color: #5c5c61;
+$color-a: #1176c0;
+$color-a-hover: #1591eb;
+
+
+$color-top-menu: #adadad;
+$color-bottom-menu: #5c5c61;
+
+$color-footer: #ebebeb;
+
+//fonts
+$nexa-bold: nexa-bold;
+$nexa-light: nexa-light;
+$montserrat-light: montserrat-light;
+$montserrat-regular: montserrat-regular;
+$montserrat-semibold: montserrat-semibold;
+$montserrat-bold: montserrat-bold;
+$raleway-light: 'Raleway', sans-serif;
+
+//grid vars
+//widths
+$width-xsmall: 90%;
+//xs < $bp-small
+$bp-small: 768px;
+$width-small: 730px;
+//$bp-middle > sm >= $bp-small
+$bp-middle: 992px;
+$width-middle: 960px;
+//$bp-large > md >= $bp-middle
+$bp-large: 1021px;
+$width-large: 981px;
+
+//offsets
+$container-padding-left: 0;
+$container-padding-right: 0;
+
+$container-fluid-padding-left: 0;
+$container-fluid-padding-right: 0;
+
+$row-margin-left: 0;
+$row-margin-right: 0;
+
+$col-padding-left: 0;
+$col-padding-right: 0;

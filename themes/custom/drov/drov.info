@@ -1,0 +1,26 @@
+name = drov
+description = Drov custom theme.
+
+stylesheets[all][] = css/styles.css
+
+stylesheets[all][] = css/custom.css
+
+scripts[] = js/lib/bootstrap-modal.min.js
+scripts[] = js/lib/device.min.js
+scripts[] = js/lib/html5.js
+scripts[] = js/lib/scrollreveal.min.js
+scripts[] = js/lib/d3.min.js
+scripts[] = js/lib/jquery.columnizer.js
+scripts[] = js/lib/select2.full.js
+scripts[] = js/js.js
+scripts[] = js/custom.js
+
+package = drov
+version = "7.0"
+core = 7.x
+
+regions[top_header] = Top Header
+regions[header] = Header
+regions[content] = Content
+regions[footer] = Footer
+regions[login_popup] = Login popup

@@ -1,0 +1,9 @@
+name = Drov portal
+description = Drov portal functionality
+package = Drov
+core = 7.x
+version = 7.x-1.x
+interface translation project = FALSE
+
+;files[] =
+;dependencies[] = 

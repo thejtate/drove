@@ -1,0 +1,154 @@
+html {
+  height: 100%;
+  -webkit-font-smoothing: antialiased;
+
+  &.desktop {
+
+    a[href^="tel"] {
+      //if need
+      //cursor: default;loca
+      //pointer-events: none;
+    }
+  }
+}
+
+body {
+  min-height: 100%;
+  height: 100%;
+  font-size: 14px;
+  line-height: 1.8;
+  color: $color;
+  font-family: Arial;
+  min-width: 320px;
+  background-color: #fff;
+}
+
+*, :after, :before {
+  @include box-sizing(border-box);
+  outline: none;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-weight: normal;
+}
+
+h1, h2, h3 {
+  margin: 0;
+  line-height: 1.25;
+  font-family: $nexa-light;
+  color: $color-a;
+  font-size: 24px;
+
+  @media (min-width: $bp-small) {
+    font-size: 40px;
+  }
+
+  @media (min-width: $bp-middle) {
+    font-size: 48px;
+  }
+}
+
+h1 {
+  margin-bottom: 24px;
+}
+
+h2, h3 {
+  margin-bottom: 16px;
+
+  @media (min-width: $bp-small) {
+    margin-bottom: 20px;
+  }
+
+  @media (min-width: $bp-middle) {
+    margin-bottom: 30px;
+  }
+}
+
+p {
+  margin: 0 0 22px;
+}
+
+ul, ol {
+  margin: 0;
+  padding: 0 0 0 16px;
+
+  li {
+    margin: 0 0 16px;
+    padding: 0;
+  }
+}
+
+a {
+  color: $color-a;
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+  vertical-align: top;
+}
+
+#canvas-zone-metal {
+  width: 100%;
+  position: relative;
+
+  @media (min-width: $bp-middle) {
+    width: 650px;
+    top: 98px;
+    left: 92px;
+  }
+
+  .img-desc {
+    position: absolute;
+    width: 100px;
+    color: #bdbbbd;
+    line-height: 1.3;
+    text-align: left;
+    top: 64%;
+    right: 67%;
+
+    @media (min-width: 1200px) {
+      top: 64%;
+      right: 85%;
+    }
+  }
+}
+
+.mobile-only {
+
+  .front & {
+    padding-top: 20px;
+  }
+
+  @media (min-width: $bp-small) {
+    display: none;
+  }
+}
+
+/*highlighting elements of map*/
+@keyframes rotate {
+
+  0% {
+    @include transform(rotate(0deg));
+  }
+
+  100% {
+    @include transform(rotate(-720deg));
+  }
+}
+
+@-webkit-keyframes rotate {
+
+  0% {
+    @include transform(rotate(0deg));
+  }
+
+  100% {
+    @include transform(rotate(-720deg));
+  }
+}

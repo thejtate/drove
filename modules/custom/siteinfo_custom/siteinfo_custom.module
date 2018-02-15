@@ -1,0 +1,122 @@
+<?php
+
+/**
+ * @file
+ * Siteinfo custom
+ */
+
+/**
+ * Implements hook_menu().
+ */
+function siteinfo_custom_menu() {
+  $items = array();
+
+  $items['admin/site-info-custom/config'] = array(
+    'title' => 'Site Configuration',
+    'description' => 'Site Configuration page',
+    'type' => MENU_NORMAL_ITEM,
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('siteinfo_custom_site_setings_form'),
+    'access arguments' => array('administer custom siteinfo content configuration'),
+  );
+  return $items;
+}
+
+/**
+ * Implements hook_permission().
+ */
+function siteinfo_custom_permission() {
+  $return = array();
+
+  $return['administer custom siteinfo content configuration'] = array(
+    'title' => t('Allow to administer custom site settings'),
+  );
+
+  return $return;
+}
+
+/**
+ * Site configuration form.
+ */
+function siteinfo_custom_site_setings_form($form) {
+
+  $form['telephone'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Contact telephones'),
+    '#weight' => 1,
+    '#collapsible' => FALSE,
+    '#collapsed' => FALSE,
+  );
+
+  $form['telephone']['siteinfo_office_tel'] = array(
+    '#type' => 'textfield',
+    '#required' => FALSE,
+    '#title' => t('Office telephone'),
+    '#default_value' => variable_get('siteinfo_office_tel', ''),
+  );
+  $form['telephone']['siteinfo_mobile_tel'] = array(
+    '#type' => 'textfield',
+    '#required' => FALSE,
+    '#title' => t('Mobile telephone'),
+    '#default_value' => variable_get('siteinfo_mobile_tel', ''),
+  );
+  $form['siteinfo_email'] = array(
+    '#type' => 'textfield',
+    '#required' => FALSE,
+    '#title' => t('Contact email'),
+    '#default_value' => variable_get('siteinfo_email', ''),
+  );
+
+  $form['footer_data'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Footer site info'),
+    '#weight' => 1,
+    '#collapsible' => FALSE,
+    '#collapsed' => FALSE,
+  );
+
+  $form['footer_data']['siteinfo_copyright'] = array(
+    '#type' => 'textfield',
+    '#required' => FALSE,
+    '#description' => t(' Use %year% instead of the actual date (do not omit % sign)'),
+    '#default_value' => variable_get('siteinfo_copyright', ''),
+  );
+
+  $form['siteinfo_map'] = array(
+    '#type' => 'textfield',
+    '#required' => FALSE,
+    '#description' => t('Our location:'),
+    '#default_value' => variable_get('siteinfo_map', ''),
+  );
+
+  return system_settings_form($form);
+}
+
+/**
+ * Implements hook_preprocess_page().
+ */
+function siteinfo_custom_preprocess_page(&$vars) {
+  $office_tel = variable_get('siteinfo_office_tel', '');
+  if (!empty($office_tel)) {
+    $vars['siteinfo_office_tel'] = preg_replace('/[^0-9]/', '', $office_tel);
+    $vars['siteinfo_office_tel_title'] = $office_tel;
+
+  }
+  $mobile_tel = variable_get('siteinfo_mobile_tel', '');
+  if (!empty($mobile_tel)) {
+    $vars['siteinfo_mobile_tel'] = preg_replace('/[^0-9]/', '', $mobile_tel);
+    $vars['siteinfo_mobile_tel_title'] = $mobile_tel;
+  }
+
+  $siteinfo_email = variable_get('siteinfo_email', '');
+  if (!empty($siteinfo_email)) {
+    $vars['siteinfo_email'] = $siteinfo_email;
+  }
+  $siteinfo_map = variable_get('siteinfo_map', '');
+  if (!empty($siteinfo_map)) {
+    $vars['siteinfo_map'] = $siteinfo_map;
+  }
+
+  $vars['copyright'] = str_replace("%year%", date("Y"), variable_get('siteinfo_copyright', ''));
+
+}

@@ -1,0 +1,16 @@
+Index: trunk/sites/all/modules/contrib/hierarchical_select/hierarchical_select.module
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- trunk/sites/all/modules/contrib/hierarchical_select/hierarchical_select.module	(revision 492813bbdfc987b80289e3cdf2c956d7f7df4dab)
++++ trunk/sites/all/modules/contrib/hierarchical_select/hierarchical_select.module	(revision )
+@@ -1923,7 +1923,7 @@
+ 
+     // Item type.
+     $item_type = (count($config['editability']['item_types']) >=  $depth)
+-      ? t($config['editability']['item_types'][$depth])
++      ? t(!empty($config['editability']['item_types'][$depth]) ? $config['editability']['item_types'][$depth] : '')
+       : t('item');
+ 
+     // The new level with only a level label and a "<create new item>" option.

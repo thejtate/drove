@@ -1,0 +1,16 @@
+Index: trunk/sites/all/modules/contrib/hierarchical_select/hierarchical_select.module
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- trunk/sites/all/modules/contrib/hierarchical_select/hierarchical_select.module	(revision 2d065d4ffa3c9a0d68d4552cf3d4dc525b0bb317)
++++ trunk/sites/all/modules/contrib/hierarchical_select/hierarchical_select.module	(revision )
+@@ -1812,7 +1812,7 @@
+           && module_hook($config['module'], 'hierarchical_select_create_item')) {
+       for ($depth = 1; $depth <= $max_depth; $depth++) {
+         $item_type = (count($config['editability']['item_types']) >=  $depth)
+-          ? t($config['editability']['item_types'][$depth])
++          ? t(!empty($config['editability']['item_types'][$depth]) ? $config['editability']['item_types'][$depth] : '')
+           : t('item');
+         $option = theme('hierarchical_select_special_option', array('option' => t('create new !item_type', array('!item_type' => $item_type))));
+         if (_hierarchical_select_create_new_item_is_allowed($config, $depth)) {

@@ -1,0 +1,73 @@
+.site-footer {
+  padding: 30px 0 20px;
+  text-align: center;
+  font-size: 12px;
+
+  @media (min-width: $bp-small) {
+    text-align: left;
+    padding: 40px 0;
+  }
+
+  @media (min-width: $bp-middle) {
+    padding: 60px 0;
+  }
+
+  .page-contact &, .page-careers &, .page-sustainability & {
+    background: $color-footer;
+  }
+
+  a {
+    color: $color;
+  }
+
+  p {
+    margin: 0;
+  }
+
+  .left-part {
+    display: inline-block;
+    text-align: left;
+
+    @media (min-width: $bp-small) {
+      float: left;
+      display: block;
+    }
+  }
+
+  .right-part {
+    margin-bottom: 10px;
+
+    @media (min-width: $bp-small) {
+      float: right;
+      text-align: right;
+      margin-bottom: 0;
+    }
+  }
+
+  .logo {
+    margin-bottom: 15px;
+  }
+
+  .location, .phone, .mail {
+    position: relative;
+    padding-left: 25px;
+    margin-bottom: 4px;
+
+    &:before {
+      @include pseudo-block($top: 50%, $left: 0);
+      @include translateY(-50%);
+    }
+  }
+
+  .location:before {
+    @include oneline-sprite-box($icons, map-point);
+  }
+
+  .phone:before {
+    @include oneline-sprite-box($icons, icon-phone);
+  }
+
+  .mail:before {
+    @include oneline-sprite-box($icons, icon-mail);
+  }
+}

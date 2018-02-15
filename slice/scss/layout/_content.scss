@@ -1,0 +1,378 @@
+.content-wrapper {
+
+  ul:not(.field-collection-view-links):not(.action-links-field-collection-add) {
+    margin: 0;
+    padding: 0 0 0 15px;
+    list-style: none;
+
+    li {
+      margin: 0 0 9px;
+      position: relative;
+      padding-left: 40px;
+
+      &:before {
+        @include pseudo-block($top: 50%, $left: 0);
+        @include translateY(-50%);
+        @include oneline-sprite-box($icons, icon-list);
+      }
+    }
+  }
+
+  .content-block {
+    @include clearfix();
+
+    .front & {
+      @media (min-width: $bp-small) {
+        padding: 40px 0;
+      }
+    }
+
+    &.style-a {
+      position: relative;
+      padding: 35px 0;
+      margin: 40px 0 50px;
+
+      @media (min-width: $bp-small) {
+        padding: 70px 0;
+        margin: 60px 0;
+      }
+
+      @media (min-width: $bp-middle) {
+        padding: 85px 0;
+        margin: 90px 0;
+      }
+
+      &:before {
+        @include pseudo-block($top: 0, $bottom: 0, $left: 50%);
+        @include translateX(-50%);
+        width: 5000px;
+        background: #1176c0;
+        z-index: -1;
+      }
+    }
+
+    &.img-right, &.img-left {
+
+      .img {
+        text-align: center;
+        margin-bottom: 20px;
+        z-index: -1;
+
+        @media (min-width: $bp-middle) {
+          position: absolute;
+          top: 50%;
+          @include translate(0, -50%);
+          margin-bottom: 0;
+
+          img {
+            max-width: none;
+          }
+        }
+
+        .front & {
+          @media (min-width: $bp-middle) {
+            position: absolute;
+            top: 50%;
+            @include translate(0, -50%);
+            margin-bottom: 0;
+
+            img {
+              max-width: none;
+            }
+          }
+        }
+      }
+    }
+
+    &.img-right {
+
+      .front & {
+        z-index: 1;
+        position: relative;
+      }
+
+      .img {
+        left: calc(100% + 50px);
+
+        .front & {
+          left: 88%;
+        }
+      }
+    }
+
+    &.img-left {
+
+      .front & {
+        @media (min-width: $bp-small) {
+          padding: 90px 0;
+        }
+      }
+
+      @media (min-width: $bp-middle) {
+        .text {
+          float: right;
+        }
+      }
+
+      .img {
+        right: calc(100% + 50px);
+
+        .front & {
+          @media (min-width: $bp-middle) {
+            margin-top: -60px;
+          }
+        }
+      }
+    }
+
+    .text {
+      position: relative;
+
+      @media (min-width: $bp-middle) {
+        width: 540px;
+        min-height: 212px;
+
+        .node-type-who-we-are & {
+          width: 440px;
+          right: -40px;
+        }
+      }
+
+      .front & {
+        min-height: 0;
+
+        @media (min-width: $bp-middle) {
+          width: 450px;
+        }
+      }
+
+      .text-inner {
+
+        ul {
+          padding-left: 0;
+        }
+      }
+    }
+  }
+
+  .separator {
+    padding-left: 190px;
+    margin: -22px 0 0;
+    position: relative;
+    text-align: center;
+    display: none;
+
+    @media (min-width: $bp-middle) {
+      display: block;
+    }
+  }
+
+  .page-user-reset & {
+    padding: 20px 0;
+
+    .section-media .container {
+      padding: 0;
+    }
+  }
+}
+
+.text-block {
+  margin-bottom: 30px;
+
+  @media (min-width: $bp-small) {
+    margin-bottom: 60px;
+  }
+
+  @media (min-width: $bp-middle) {
+    margin-bottom: 100px;
+
+    .node-type-who-we-are & {
+      margin-bottom: 60px;
+    }
+  }
+
+  .page-productregistration & {
+    margin-bottom: 0;
+  }
+
+  h3 {
+    text-align: center;
+
+    @media (min-width: $bp-middle) {
+      margin: 0 0 55px;
+    }
+  }
+
+  .text {
+    max-width: 742px;
+    margin: 0 auto;
+
+    .front & {
+      max-width: 590px;
+      text-align: center;
+    }
+
+    .page-productregistration & {
+      max-width: 690px;
+      text-align: center;
+      margin: 0 auto 50px;
+    }
+  }
+
+  .link {
+    text-align: center;
+    font-size: 18px;
+    font-family: $montserrat-regular;
+    margin-top: 20px;
+
+    @media (min-width: $bp-small) {
+      margin-top: 40px;
+    }
+
+    @media (min-width: $bp-middle) {
+      margin-top: 60px;
+    }
+
+    a {
+      text-decoration: underline;
+
+      &:hover {
+        text-decoration: none;
+      }
+    }
+  }
+}
+
+.cols {
+
+  &.cols-2 {
+
+    .col {
+      text-align: justify;
+
+      &:first-child {
+
+        @media (min-width: $bp-small) {
+          padding-right: 20px;
+        }
+
+        @media (min-width: $bp-middle) {
+          padding-right: 27px;
+        }
+      }
+
+      &:last-child {
+
+        @media (min-width: $bp-small) {
+          padding-left: 20px;
+        }
+
+        @media (min-width: $bp-middle) {
+          padding-left: 27px;
+        }
+      }
+    }
+  }
+
+  &.cols-3 {
+    font-family: $nexa-light;
+    color: #fff;
+    line-height: 1;
+
+    a {
+      color: #fff;
+      display: block;
+      margin-bottom: 30px;
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+
+      &[href^="mailto"] {
+        text-decoration: underline;
+
+        &:hover {
+          text-decoration: none;
+        }
+      }
+    }
+
+    .col-body {
+      height: 182px;
+      font-size: 18px;
+    }
+
+    .col {
+      text-align: center;
+      margin-bottom: 20px;
+
+      @media (min-width: $bp-small) {
+        margin-bottom: 40px;
+      }
+
+      @media (min-width: $bp-middle) {
+        margin-bottom: 0;
+      }
+
+      &:first-child {
+
+        @media (min-width: $bp-middle) {
+          padding-right: 14px;
+        }
+      }
+
+      &:nth-child(2) {
+
+        @media (min-width: $bp-middle) {
+          padding: 0 7px;
+        }
+
+        .col-body {
+          background: #1176c0;
+
+          a {
+            font-size: 24px;
+          }
+        }
+      }
+
+      &:last-child {
+
+        @media (min-width: $bp-middle) {
+          padding-left: 14px;
+        }
+
+        .col-body {
+          background: #5c5c61;
+        }
+      }
+    }
+  }
+}
+
+.columnizer {
+  font-family: $montserrat-regular;
+
+  .first, .last {
+    width: 100% !important;
+
+    @media (min-width: $bp-small) {
+      width: 50% !important;
+    }
+  }
+
+  .first {
+
+    @media (min-width: $bp-small) {
+      padding-right: 35px;
+    }
+  }
+
+  .last {
+
+    @media (min-width: $bp-small) {
+      padding-left: 35px;
+    }
+  }
+}
+
